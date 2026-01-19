@@ -14,7 +14,6 @@ export const register = async (req, res) => {
             return res.status(400).json({ message: "Este e-mail já está cadastrado." });
         }
 
-
         const newUser = await createUser({ email, senha, role });
 
         const token = jwt.sign(
@@ -53,7 +52,7 @@ export const login = async (req, res) => {
         const token = jwt.sign(
             { id: user.id, role: user.role || 'user' },
             authConfig.secret,
-            { expiresIn: '1d' }
+            { expiresIn:  authConfig.expiresIn }
         );
 
         return res.json({
