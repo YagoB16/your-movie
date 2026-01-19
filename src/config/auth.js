@@ -1,6 +1,6 @@
-require('dotenv').config();
+import 'dotenv/config';
 
-modules.exports ={
+export default {
   secret: process.env.JWT_SECRET || 'your_secret_key',
-  expiresIn: process.env.JWT_EXPIRES_IN || '1h' // Tempo de expiração do token
-}
+  expiresIn: process.env.JWT_EXPIRES_IN || '1h'
+};
