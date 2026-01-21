@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 export const movieSchema = z.object({
   titulo: z.string({
     required_error: "O título é obrigatório",
@@ -13,3 +12,5 @@ export const movieSchema = z.object({
   }).min(1895, "O ano deve ser superior ao nascimento do cinema (1895)")
     .max(new Date().getFullYear() + 5, "Ano de lançamento inválido")
 });
+
+export const updateMovieSchema = movieSchema.partial();
