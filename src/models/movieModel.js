@@ -3,6 +3,7 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   updateDoc,
   deleteDoc,
   doc,
@@ -16,7 +17,7 @@ const createMovie = async (data) => {
     descricao: data.descricao,
     ano_lancamento: data.anoLancamento,
   });
-  
+
   return {
     id: docRef.id,
     titulo: data.titulo,
@@ -27,17 +28,50 @@ const createMovie = async (data) => {
 
 const getMovies = async () => {
   const snapshot = await getDocs(moviesCollection);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      titulo: data.titulo,
+      descricao: data.descricao,
+      anoLancamento: data.ano_lancamento,
+    };
+  });
 };
 
 const updateMovie = async (id, data) => {
   const movieRef = doc(db, "movies", id);
-  await updateDoc(movieRef, data);
-  return { id, ...data };
+
+  const movieSnap = await getDoc(movieRef);
+
+  if (!movieSnap.exists()) {
+    const error = new Error("Filme não encontrado no banco de dados.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  //Transformar meus campos camelCase em snake_case
+  const dataToUpdate = {};
+
+  if (data.titulo) dataToUpdate.titulo = data.titulo;
+  if (data.descricao) dataToUpdate.descricao = data.descricao;
+  if (data.anoLancamento) dataToUpdate.ano_lancamento = data.anoLancamento;
+  if (data.imdbID) dataToUpdate.imdbID = data.imdbID;
+
+  await updateDoc(movieRef, dataToUpdate);
+  return { id, ...dataToUpdate };
 };
 
 const deleteMovie = async (id) => {
   const movieRef = doc(db, "movies", id);
+  const movieSnap = await getDoc(movieRef);
+
+  if (!movieSnap.exists()) {
+    const error = new Error("Filme não encontrado no banco de dados.");
+    error.statusCode = 404;
+    throw error;
+  }
+
   await deleteDoc(movieRef);
   return id;
 };
