@@ -1,0 +1,37 @@
+services:
+  api:
+    build:
+      context: .
+      target: production
+    container_name: your-movie-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/system/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Para desenvolvimento local com hot reload
+  api-dev:
+    build:
+      context: .
+      target: builder
+    container_name: your-movie-dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./src:/app/src
+    command: npm run dev
+    profiles:
+      - dev

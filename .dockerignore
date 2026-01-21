@@ -1,0 +1,30 @@
+node_modules
+npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+README.md
+
+# IDE
+.vscode
+.idea
+
+# Test & Coverage
+coverage
+.nyc_output
+
+# Logs
+*.log
