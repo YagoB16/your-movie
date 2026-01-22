@@ -12,26 +12,28 @@ services:
       - NODE_ENV=production
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/system/health"]
+      # Ajustado para usar o endpoint que você realmente criou
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/system/check"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 15s
 
-  # Para desenvolvimento local com hot reload
   api-dev:
     build:
       context: .
+      # Dev, usamos o builder para ter acesso às devDependencies (como o Jest e Nodemon)
       target: builder
     container_name: your-movie-dev
     ports:
-      - "3000:3000"
+      - "3001:3000" # Porta diferente para não conflitar com a produção
     env_file:
       - .env
     environment:
       - NODE_ENV=development
     volumes:
-      - ./src:/app/src
+      - .:/app # Mapeia tudo para permitir hot-reload total (incluindo package.json)
+      - /app/node_modules # Impede que o node_modules local sobrescreva o do container
     command: npm run dev
     profiles:
       - dev

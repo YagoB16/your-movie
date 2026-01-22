@@ -3,31 +3,30 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copia apenas arquivos de dependências primeiro (melhor cache)
 COPY package*.json ./
 
-RUN npm ci --only=production
+# Instalamos tudo primeiro para garantir que o 'api-dev' funcione
+RUN npm install
 
 # ========== Production Stage ==========
 FROM node:20-alpine AS production
 
-# Segurança: não rodar como root
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodeuser -u 1001
 
 WORKDIR /app
 
-# Copia dependências do stage anterior
+# Copia apenas as dependências de produção para o ambiente final
 COPY --from=builder /app/node_modules ./node_modules
+# Remove dependências de desenvolvimento para economizar espaço
+RUN npm prune --production
 
-# Copia código fonte
+# Copia código fonte e arquivos necessários
 COPY --chown=nodeuser:nodejs ./src ./src
 COPY --chown=nodeuser:nodejs package*.json ./
 
 USER nodeuser
-
 EXPOSE 3000
-
 ENV NODE_ENV=production
 
 CMD ["node", "src/app.js"]
