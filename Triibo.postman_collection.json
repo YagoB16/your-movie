@@ -1,0 +1,449 @@
+{
+  "info": {
+    "_postman_id": "1c314cbf-9faf-4216-9523-bc12c615960b",
+    "name": "Triibo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27816634"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "if (response.token) {\r",
+                  "    \r",
+                  "    pm.collectionVariables.set(\"jwt_token\", response.token);\r",
+                  "    console.log(\"Token JWT atualizado com sucesso!\");\r",
+                  "} else {\r",
+                  "    console.warn(\"Token não encontrado na resposta da API.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"yago@teste.com\",\r\n  \"senha\": \"minhasenha123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "if (response.token) {\r",
+                  "    \r",
+                  "    pm.collectionVariables.set(\"jwt_token\", response.token);\r",
+                  "    console.log(\"Token JWT atualizado com sucesso!\");\r",
+                  "} else {\r",
+                  "    console.warn(\"Token não encontrado na resposta da API.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"yago@teste.com\",\r\n  \"senha\": \"minhasenha123\",\r\n  \"role\": \"admin\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "external-api",
+      "item": [
+        {
+          "name": "key",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/apikey.aspx?VERIFYKEY=b9abef7b-2027-49f4-b8f4-eab06cc1fc71",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "apikey.aspx"
+              ],
+              "query": [
+                {
+                  "key": "VERIFYKEY",
+                  "value": "b9abef7b-2027-49f4-b8f4-eab06cc1fc71"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movie-id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/?i=tt0096895&apikey={{apiKey}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                ""
+              ],
+              "query": [
+                {
+                  "key": "i",
+                  "value": "tt0096895"
+                },
+                {
+                  "key": "apikey",
+                  "value": "{{apiKey}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "search-pagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://www.omdbapi.com/?s=Batman&apikey={{apiKey}}",
+              "protocol": "http",
+              "host": [
+                "www",
+                "omdbapi",
+                "com"
+              ],
+              "path": [
+                ""
+              ],
+              "query": [
+                {
+                  "key": "s",
+                  "value": "Batman"
+                },
+                {
+                  "key": "apikey",
+                  "value": "{{apiKey}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "movies",
+      "item": [
+        {
+          "name": "create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"titulo\": \"Batman 2\",\r\n    \"anoLancamento\": 2025,\r\n    \"descricao\": \"The Dark Knight of Gotham City begins his war on crime with his first major enemy being Jack Napier, a criminal who becomes the clownishly homicidal Joker.\",\r\n    \"imdbID\": \"tt0096895\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/movies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-movie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/movies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-movie-external-search",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/movies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-movie-external-id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/movies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-movie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"titulo\": \"Batman\",\r\n    \"anoLancamento\": 1929 ,\r\n    \"descricao\": \"lorem pispodas lasdoal asdplasdl lorem ipsu terste asdadmoas \"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/movies/dccgj2UTjkgXU8udUwo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "movies",
+                "dccgj2UTjkgXU8udUwo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-movie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/movies/mzsJgdNoCdCqR218AVkq",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "movies",
+                "mzsJgdNoCdCqR218AVkq"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "health",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"yago@desenvolvedor.com\",\r\n  \"senha\": \"minhasenha123\",\r\n  \"role\": \"admin\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/system/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "system",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "jwt_token",
+      "value": ""
+    }
+  ]
+}
