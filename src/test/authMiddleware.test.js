@@ -39,7 +39,7 @@ describe("Auth Middleware", () => {
     authMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
-    // Ajustado para 'user' conforme seu código
+ 
     expect(req.user).toEqual({ id: "123", role: "admin" });
   });
 
@@ -62,7 +62,7 @@ describe("Auth Middleware", () => {
   });
 
   it("deve retornar 401 se o header de autorização estiver ausente", async () => {
-    // req.headers.authorization já está vazio pelo beforeEach
+
     authMiddleware(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(401);
@@ -82,7 +82,7 @@ describe("Auth Middleware", () => {
   });
 
   it("deve retornar 401 se o scheme não for Bearer", async () => {
-    req.headers.authorization = "Basic token123"; // Scheme errado
+    req.headers.authorization = "Basic token123";
 
     authMiddleware(req, res, next);
 

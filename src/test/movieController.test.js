@@ -60,7 +60,6 @@ describe("Movie Controller - Cobertura Total", () => {
     it("searchMovie deve retornar 200 na busca por termo (Linhas 37-48)", async () => {
       externalApi.searchMovie.mockResolvedValue({ Search: [{ Title: "Batman" }], Response: "True" });
 
-      // Rota corrigida conforme o arquivo de rotas: /movies/search
       const response = await request(app).get("/movies/external/search?q=Batman");
 
       expect(response.status).toBe(200);
