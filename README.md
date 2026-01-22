@@ -121,7 +121,7 @@ npm run doc
 O projeto está configurado para rodar em containers:
 
 ```bash
-docker-compose up -d --build
+docker compose --profile dev up api-dev
 
 ```
 
