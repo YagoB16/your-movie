@@ -125,7 +125,7 @@ docker compose --profile dev up api-dev
 
 ```
 
-A API ficará disponível em `http://localhost:3000`.
+A API ficará disponível em `http://localhost:3001`.
 
 ## 🏥 Monitoramento (Health Check)
 
