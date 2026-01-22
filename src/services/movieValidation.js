@@ -13,4 +13,5 @@ export const movieSchema = z.object({
     .max(new Date().getFullYear() + 5, "Ano de lançamento inválido")
 });
 
+
 export const updateMovieSchema = movieSchema.partial();
