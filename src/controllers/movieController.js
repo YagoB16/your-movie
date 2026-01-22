@@ -33,9 +33,8 @@ export const createMovie = async (req, res, next) => {
   }
 };
 
-export const listMovieById = async (req, res, next) => {
+export const externalListMovieById = async (req, res, next) => {
   try {
-
     const { id } = req.params;
 
     // Busca na OMDb via Service
@@ -50,7 +49,7 @@ export const listMovieById = async (req, res, next) => {
   }
 };
 
-export const searchMovie = async (req, res, next) => {
+export const externalSearchMovie = async (req, res, next) => {
   const { q } = req.query;
   try {
     const results = await fetchExternalSearch(q);
@@ -68,7 +67,22 @@ export const listMovies = async (req, res, next) => {
     const result = await getService();
     res.status(200).json({
       success: true,
-      filmes: result,
+      message: "Filmes listados com sucesso!",
+      info: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listMovieByDatabaseId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await movieModel.getMovieById(id);
+
+    res.status(200).json({
+      success: true,
+      data: result,
     });
   } catch (error) {
     next(error);
@@ -81,7 +95,7 @@ export const updateMovieById = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Atualizado com sucesso",
-      movie: result,
+      info: result,
     });
   } catch (error) {
     next(error);

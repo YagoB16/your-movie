@@ -28,6 +28,7 @@ export const register = async (req, res) => {
     );
 
     return res.status(201).json({
+      success: true,
       message: "Usuário criado com sucesso!",
       user: { id: newUser.id, email: newUser.email },
       token,
@@ -64,7 +65,8 @@ export const login = async (req, res) => {
     );
 
     return res.json({
-      user: { id: user.id, email: user.email },
+      success: true,
+      info: { id: user.id, email: user.email },
       token,
     });
   } catch (error) {
