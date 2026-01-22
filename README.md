@@ -49,7 +49,7 @@ FIREBASE_MEASUREMENT_ID=SEU_MEASUREMENT_ID
 
 ```
 
-### 3.  Configuração do Firebase (Firestore) 🔥
+### 3. 🔥 Configuração do Firebase (Firestore)
 
 Para que a API funcione, você precisa configurar um projeto no Firebase Console:
 
@@ -64,9 +64,32 @@ Para que a API funcione, você precisa configurar um projeto no Firebase Console
 * Vá em **Configurações do Projeto** (ícone de engrenagem).
 * Em "Seus aplicativos", clique no ícone **</>** (Web App) para registrar o app.
 * O Firebase exibirá um objeto `firebaseConfig`. Copie esses valores para o seu arquivo `.env` local.
-*
 
-### 4. Instalar dependências
+---
+
+### 4. 🔑 Obtendo a API Key da OMDb
+
+Esta API utiliza a **OMDb API** para buscar detalhes técnicos dos filmes. Siga os passos para obter sua chave gratuita:
+
+1. Acesse o site oficial: [omdbapi.com/apikey.aspx](http://www.omdbapi.com/apikey.aspx).
+2. Selecione a opção **FREE** (permite até 1.000 requisições diárias).
+3. Preencha o formulário com:
+* **Email:** Seu e-mail válido.
+* **First Name / Last Name:** Seu nome.
+* **Use:** Breve descrição (ex: "Educational project for a movie catalog API").
+
+
+4. **Ativação:** Você receberá um e-mail com a chave e um **link de ativação**.
+> **Importante:** A chave só funcionará após você clicar no link enviado para o seu e-mail.
+
+
+5. **Configuração:** Copie a chave recebida e cole no seu arquivo `.env`:
+```env
+API_KEY=sua_chave_aqui
+
+```
+
+### 5. Instalar dependências
 
 ```bash
 npm install
