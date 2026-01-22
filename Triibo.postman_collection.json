@@ -47,12 +47,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/auth/login",
-              "protocol": "http",
+              "raw": "{{baseApiURL}}/auth/login",
               "host": [
-                "localhost"
+                "{{baseApiURL}}"
               ],
-              "port": "3000",
               "path": [
                 "auth",
                 "login"
@@ -99,12 +97,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/auth/register",
-              "protocol": "http",
+              "raw": "{{baseApiURL}}/auth/register",
               "host": [
-                "localhost"
+                "{{baseApiURL}}"
               ],
-              "port": "3000",
               "path": [
                 "auth",
                 "register"
@@ -119,14 +115,14 @@
       "name": "external-api",
       "item": [
         {
-          "name": "key",
+          "name": "active-key",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseURL}}/apikey.aspx?VERIFYKEY=b9abef7b-2027-49f4-b8f4-eab06cc1fc71",
+              "raw": "{{baseExternalApiURL}}/apikey.aspx?VERIFYKEY={{yourVerifyApiKey}",
               "host": [
-                "{{baseURL}}"
+                "{{baseExternalApiURL}}"
               ],
               "path": [
                 "apikey.aspx"
@@ -134,7 +130,7 @@
               "query": [
                 {
                   "key": "VERIFYKEY",
-                  "value": "b9abef7b-2027-49f4-b8f4-eab06cc1fc71"
+                  "value": "{{yourVerifyApiKey}"
                 }
               ]
             }
@@ -150,9 +146,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseURL}}/?i=tt0096895&apikey={{apiKey}}",
+              "raw": "{{baseExternalApiURL}}/?i=tt0096895&apikey={{apiKey}}",
               "host": [
-                "{{baseURL}}"
+                "{{baseExternalApiURL}}"
               ],
               "path": [
                 ""
@@ -160,7 +156,8 @@
               "query": [
                 {
                   "key": "i",
-                  "value": "tt0096895"
+                  "value": "tt0096895",
+                  "description": "id movie"
                 },
                 {
                   "key": "apikey",
@@ -177,12 +174,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://www.omdbapi.com/?s=Batman&apikey={{apiKey}}",
-              "protocol": "http",
+              "raw": "{{baseExternalApiURL}}/?s=Batman&apikey={{apiKey}}",
               "host": [
-                "www",
-                "omdbapi",
-                "com"
+                "{{baseExternalApiURL}}"
               ],
               "path": [
                 ""
@@ -223,7 +217,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"titulo\": \"Batman 2\",\r\n    \"anoLancamento\": 2025,\r\n    \"descricao\": \"The Dark Knight of Gotham City begins his war on crime with his first major enemy being Jack Napier, a criminal who becomes the clownishly homicidal Joker.\",\r\n    \"imdbID\": \"tt0096895\" \r\n}",
+              "raw": "{\r\n    \"titulo\": \"Dieg2 8\",\r\n    \"anoLancamento\": 2025,\r\n    \"descricao\": \"The Dark Knight of Gotham City begins his war on crime with his first major enemy being Jack Napier, a criminal who becomes the clownishly homicidal Joker.\",\r\n    \"imdbID\": \"tt0096895\" \r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -231,12 +225,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/movies",
-              "protocol": "http",
+              "raw": "{{baseApiURL}}/movies",
               "host": [
-                "localhost"
+                "{{baseApiURL}}"
               ],
-              "port": "3000",
               "path": [
                 "movies"
               ]
@@ -260,14 +252,40 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/movies",
-              "protocol": "http",
+              "raw": "{{baseApiURL}}/movies",
               "host": [
-                "localhost"
+                "{{baseApiURL}}"
               ],
-              "port": "3000",
               "path": [
                 "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-movie-database-id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseApiURL}}/movies/sd",
+              "host": [
+                "{{baseApiURL}}"
+              ],
+              "path": [
+                "movies",
+                "sd"
               ]
             }
           },
@@ -289,14 +307,20 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/movies",
-              "protocol": "http",
+              "raw": "{{baseApiURL}}/movies/external/search?q=Batman",
               "host": [
-                "localhost"
+                "{{baseApiURL}}"
               ],
-              "port": "3000",
               "path": [
-                "movies"
+                "movies",
+                "external",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Batman"
+                }
               ]
             }
           },
@@ -318,14 +342,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/movies",
-              "protocol": "http",
+              "raw": "{{baseApiURL}}/movies/external/tt0096895",
               "host": [
-                "localhost"
+                "{{baseApiURL}}"
               ],
-              "port": "3000",
               "path": [
-                "movies"
+                "movies",
+                "external",
+                "tt0096895"
               ]
             }
           },
@@ -348,7 +372,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"titulo\": \"Batman\",\r\n    \"anoLancamento\": 1929 ,\r\n    \"descricao\": \"lorem pispodas lasdoal asdplasdl lorem ipsu terste asdadmoas \"\r\n}",
+              "raw": "{\r\n    \"titulo\": \"Batman\",\r\n    \"anoLancamento\": 1929 ,\r\n    \"descricao\": \"lorem pispodas lasdoal asdplasdl lorem ipsu terste\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -356,7 +380,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/movies/dccgj2UTjkgXU8udUwo",
+              "raw": "http://localhost:3000/movies/0Sx4EtL4k1AmiaofTHOY",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -364,7 +388,7 @@
               "port": "3000",
               "path": [
                 "movies",
-                "dccgj2UTjkgXU8udUwo"
+                "0Sx4EtL4k1AmiaofTHOY"
               ]
             }
           },
@@ -430,19 +454,45 @@
       "response": []
     }
   ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
   "variable": [
     {
-      "key": "baseURL",
-      "value": "",
-      "type": "default"
+      "key": "baseExternalApiURL",
+      "value": ""
     },
     {
       "key": "apiKey",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "jwt_token",
+      "value": ""
+    },
+    {
+      "key": "baseApiURL",
       "value": ""
     }
   ]
