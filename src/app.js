@@ -2,6 +2,7 @@ import express from "express";
 import movieRoutes from "./routes/movieRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import systemRoutes from "./routes/systemRoutes.js";
+import errorMiddleware from "./middlewares/errorMidleware.js";
 
 const app = express();
 
@@ -12,10 +13,7 @@ app.use("/movies", movieRoutes);
 app.use("/auth", authRoutes);
 app.use("/system", systemRoutes);
 
-const PORT = 3000;
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.use(errorMiddleware);
 
 export default app;
