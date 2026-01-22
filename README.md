@@ -49,7 +49,24 @@ FIREBASE_MEASUREMENT_ID=SEU_MEASUREMENT_ID
 
 ```
 
-### 3. Instalar dependências
+### 3.  Configuração do Firebase (Firestore) 🔥
+
+Para que a API funcione, você precisa configurar um projeto no Firebase Console:
+
+1. **Crie um Projeto:** Acesse o [Firebase Console](https://console.firebase.google.com/) e crie um novo projeto chamado `movie-t3st3`.
+2. **Habilite o Firestore:** No menu lateral, vá em **Firestore Database** e clique em **Criar banco de dados**.
+* Escolha o modo (recomendado: *Modo de Produção* para testes reais).
+* Defina o local do servidor (ex: `southamerica-east1` para o Brasil).
+
+
+3. **Regras de Segurança:** Na aba "Regras", garanta que o banco permita leitura/escrita conforme sua necessidade (para desenvolvimento, você pode usar `allow read, write: if true;`, mas lembre-se de restringir depois).
+4. **Obtenha as Credenciais:**
+* Vá em **Configurações do Projeto** (ícone de engrenagem).
+* Em "Seus aplicativos", clique no ícone **</>** (Web App) para registrar o app.
+* O Firebase exibirá um objeto `firebaseConfig`. Copie esses valores para o seu arquivo `.env` local.
+*
+
+### 4. Instalar dependências
 
 ```bash
 npm install
