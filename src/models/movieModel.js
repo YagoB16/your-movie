@@ -57,6 +57,27 @@ const getMovies = async () => {
   });
 };
 
+
+const getMovieById = async (id) => {
+  const movieRef = doc(db, "movies", id);
+  const movieSnap = await getDoc(movieRef);
+
+  if (!movieSnap.exists()) {
+    const error = new Error("Filme não encontrado no banco de dados.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const data = movieSnap.data();
+  return {
+    id: movieSnap.id,
+    titulo: data.titulo,
+    descricao: data.descricao,
+    anoLancamento: data.ano_lancamento,
+    external_data: data.external_data
+  };
+};
+
 const updateMovie = async (id, data) => {
   const movieRef = doc(db, "movies", id);
 
@@ -94,4 +115,4 @@ const deleteMovie = async (id) => {
   return id;
 };
 
-export default { createMovie, getMovies, updateMovie, deleteMovie };
+export default { createMovie, getMovies, updateMovie, deleteMovie, getMovieById };
