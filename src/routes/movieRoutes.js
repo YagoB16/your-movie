@@ -2,8 +2,9 @@ import express from "express";
 import {
   createMovie,
   listMovies,
-  listMovieById,
-  searchMovie,
+  listMovieByDatabaseId,
+  externalListMovieById,
+  externalSearchMovie,
   updateMovieById,
   deleteMovieById,
 } from "../controllers/movieController.js";
@@ -47,7 +48,42 @@ const router = express.Router();
 router.get("/", authMiddleware, listMovies);
 
 /**
- * @api {get} /movies/search Buscar Filmes (OMDb)
+ * @api {get} /movies/:id Detalhes do Filme (Banco Local)
+ * @apiName GetMovieFromDB
+ * @apiGroup Filmes
+ * @apiPermission Bearer Token
+ *
+ * @apiDescription Busca as informações de um filme cadastrado no seu catálogo do Firestore utilizando o ID interno.
+ *
+ * @apiHeader {String} Authorization Token JWT no formato: "Bearer seu_token_aqui".
+ *
+ * @apiParam {String} id ID único gerado pelo Firestore (ex: "wtHsBrAcCKi3onCBLEv1").
+ *
+ * @apiSuccess {Boolean} success Status da operação (true).
+ * @apiSuccess {Object} data Objeto contendo os dados do filme salvos no banco.
+ * @apiSuccess {String} data.id ID do documento.
+ * @apiSuccess {String} data.titulo Título do filme.
+ * @apiSuccess {String} data.descricao Sinopse salva.
+ * @apiSuccess {Number} data.anoLancamento Ano de lançamento.
+ *
+ * @apiSuccessExample {json} Sucesso-Exemplo:
+ * HTTP/1.1 200 OK
+ * {
+ * "success": true,
+ * "data": {
+ * "id": "wtHsBrAcCKi3onCBLEv1",
+ * "titulo": "Inception",
+ * "descricao": "Um ladrão que rouba segredos através da tecnologia de sonhos.",
+ * "anoLancamento": 2010
+ * }
+ * }
+ *
+ * @apiError (Erro 404) {String} message "Filme não encontrado no banco de dados."
+ */
+router.get("/:id", authMiddleware, listMovieByDatabaseId);
+
+/**
+ * @api {get} /movies/external/search Buscar Filmes (OMDb)
  * @apiName SearchMoviesExternal
  * @apiGroup API Externa
  * @apiPermission Bearer Token
@@ -85,7 +121,7 @@ router.get("/", authMiddleware, listMovies);
  * }
  * * @apiError (Erro 404) {String} message "Movie not found!" (Quando a OMDb não encontra resultados).
  */
-router.get("/search", authMiddleware, searchMovie);
+router.get("/external/search", authMiddleware, externalSearchMovie);
 
 /**
  * @api {get} /movies/external/:id Detalhes do Filme (OMDb)
@@ -117,7 +153,7 @@ router.get("/search", authMiddleware, searchMovie);
  *
  * @apiError (Erro 404) {String} message "Movie not found!" (Retornado pela OMDb via Service).
  */
-router.get("/external/:id", authMiddleware, listMovieById);
+router.get("/external/:id", authMiddleware, externalListMovieById);
 
 /**
  * @api {post} /movies Criar Filme
