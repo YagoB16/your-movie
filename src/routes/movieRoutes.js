@@ -2,6 +2,8 @@ import express from "express";
 import {
   createMovie,
   listMovies,
+  listMovieById,
+  searchMovie,
   updateMovieById,
   deleteMovieById,
 } from "../controllers/movieController.js";
@@ -45,28 +47,100 @@ const router = express.Router();
 router.get("/", authMiddleware, listMovies);
 
 /**
+ * @api {get} /movies/search Buscar Filmes (OMDb)
+ * @apiName SearchMoviesExternal
+ * @apiGroup API Externa
+ * @apiPermission Bearer Token
+ *
+ * @apiDescription Realiza uma busca por termo na API da OMDb utilizando Query Parameters.
+ * Retorna uma lista de filmes que correspondem ao nome enviado.
+ *
+ * @apiHeader {String} Authorization Token JWT no formato: "Bearer seu_token_aqui".
+ *
+ * @apiQuery {String} q Termo de busca enviado na URL (ex: ?q=Batman).
+ *
+ * @apiSuccess {Boolean} success Status da operação (true).
+ * @apiSuccess {Object} data Objeto contendo os resultados brutos da OMDb.
+ * @apiSuccess {Object[]} data.Search Lista de filmes encontrados.
+ * @apiSuccess {String} data.totalResults Quantidade total de registros na base externa.
+ * @apiSuccess {String} data.Response Resposta lógica da API ("True" ou "False").
+ *
+ * @apiSuccessExample {json} Sucesso-Exemplo:
+ * HTTP/1.1 200 OK
+ * {
+ * "success": true,
+ * "data": {
+ * "Search": [
+ * {
+ * "Title": "Batman Begins",
+ * "Year": "2005",
+ * "imdbID": "tt0372784",
+ * "Type": "movie",
+ * "Poster": "https://m.media-amazon.com/..."
+ * }
+ * ],
+ * "totalResults": "1",
+ * "Response": "True"
+ * }
+ * }
+ * * @apiError (Erro 404) {String} message "Movie not found!" (Quando a OMDb não encontra resultados).
+ */
+router.get("/search", authMiddleware, searchMovie);
+
+/**
+ * @api {get} /movies/external/:id Detalhes do Filme (OMDb)
+ * @apiName GetExternalMovieById
+ * @apiGroup API Externa
+ * @apiPermission Bearer Token
+ *
+ * @apiDescription Busca informações detalhadas (sinopse, atores, notas) de um filme específico na OMDb utilizando o ID do IMDB.
+ *
+ * @apiHeader {String} Authorization Token JWT: "Bearer seu_token_aqui".
+ *
+ * @apiParam {String} id ID do IMDB (ex: "tt0372784").
+ *
+ * @apiSuccess {Boolean} success Status da operação (true).
+ * @apiSuccess {Object} data Objeto com os detalhes completos do filme.
+ *
+ * @apiSuccessExample {json} Sucesso-Exemplo:
+ * HTTP/1.1 200 OK
+ * {
+ * "success": true,
+ * "data": {
+ * "Title": "Batman Begins",
+ * "Plot": "After training with his mentor, Batman begins his fight to free crime-ridden Gotham City...",
+ * "Actors": "Christian Bale, Michael Caine, Liam Neeson",
+ * "imdbRating": "8.2",
+ * "Response": "True"
+ * }
+ * }
+ *
+ * @apiError (Erro 404) {String} message "Movie not found!" (Retornado pela OMDb via Service).
+ */
+router.get("/external/:id", authMiddleware, listMovieById);
+
+/**
  * @api {post} /movies Criar Filme
  * @apiName CreateMovie
  * @apiGroup Filmes
  * @apiPermission Bearer Token
  *
  * @apiDescription Cadastra um novo filme no catálogo do sistema "Your-Movie".
- * Requer autenticação e validação rigorosa dos dados.
+ * Se o `imdbID` for fornecido, o sistema busca automaticamente informações extras (atores, poster, notas) na API da OMDb antes de salvar.
  *
  * @apiHeader {String} Authorization Token de acesso JWT no formato: "Bearer seu_token_aqui".
  *
  * @apiBody {String} titulo Nome do filme (mínimo de 2 caracteres).
  * @apiBody {String} descricao Resumo da trama (mínimo de 10 caracteres).
  * @apiBody {Number} anoLancamento Ano de estreia (entre 1895 e o ano atual + 5).
- * @apiBody {String} [imdbID] ID referencial do IMDB (opcional).
+ * @apiBody {String} [imdbID] ID opcional do IMDB para buscar dados extras automaticamente.
  *
  * @apiSuccess (Sucesso 201) {Boolean} success Indica se o filme foi criado.
  * @apiSuccess (Sucesso 201) {String} message Mensagem de confirmação: "Filme criado!".
- * @apiSuccess (Sucesso 201) {Object} info Dados do filme persistidos no Firestore.
- * @apiSuccess (Sucesso 201) {String} info.id ID único gerado automaticamente pelo banco.
- * @apiSuccess (Sucesso 201) {String} info.titulo Título do filme salvo.
- * @apiSuccess (Sucesso 201) {String} info.descricao Descrição salva.
- * @apiSuccess (Sucesso 201) {Number} info.ano_lancamento Ano salvo no banco (snake_case).
+ * @apiSuccess (Sucesso 201) {Object} info Dados completos do filme salvos no Firestore.
+ * @apiSuccess (Sucesso 201) {String} info.id ID único gerado pelo banco.
+ * @apiSuccess (Sucesso 201) {Number} info.ano_lancamento Ano salvo no banco em snake_case.
+ * @apiSuccess (Sucesso 201) {Object} [info.external_data] Dados enriquecidos vindos da API externa.
  *
  * @apiSuccessExample {json} Sucesso-Exemplo:
  * HTTP/1.1 201 Created
@@ -76,14 +150,18 @@ router.get("/", authMiddleware, listMovies);
  * "info": {
  * "id": "wtHsBrAcCKi3onCBLEv1",
  * "titulo": "Batman 2",
- * "descricao": "The Dark Knight of Gotham City begins his war on crime...",
- * "ano_lancamento": 2025
+ * "descricao": "The Dark Knight of Gotham City...",
+ * "ano_lancamento": 2025,
+ * "external_data": {
+ * "diretor": "Matt Reeves",
+ * "atores": "Robert Pattinson, Zoë Kravitz",
+ * "poster": "https://m.media-amazon.com/...",
+ * "imdbRating": "7.8"
+ * }
  * }
  * }
  *
- * @apiError (Erro 400) {String} status Descrição: "Erro de Validação".
- * @apiError (Erro 400) {Object[]} erros Detalhes dos erros encontrados pelo Zod (ex: "O título é obrigatório").
- * @apiError (Erro 401) {String} message Mensagem: "Token inválido ou expirado.".
+ * @apiError (Erro 400) {String} status "Erro de Validação".
  * @apiError (Erro 409) {String} message "Este filme já está cadastrado no catálogo."
  */
 router.post("/", authMiddleware, validate(movieSchema), createMovie);

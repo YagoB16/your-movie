@@ -14,7 +14,7 @@ import {
 const moviesCollection = collection(db, "movies");
 
 const createMovie = async (data) => {
-    const q = query(
+  const q = query(
     moviesCollection,
     where("titulo", "==", data.titulo),
     where("ano_lancamento", "==", data.anoLancamento),
@@ -24,7 +24,7 @@ const createMovie = async (data) => {
 
   if (!querySnapshot.empty) {
     const error = new Error("Este filme já está cadastrado no catálogo.");
-    error.statusCode = 409; 
+    error.statusCode = 409;
     throw error;
   }
 
@@ -32,6 +32,7 @@ const createMovie = async (data) => {
     titulo: data.titulo,
     descricao: data.descricao,
     ano_lancamento: data.anoLancamento,
+    external_data: data.externalData,
   });
 
   return {
@@ -39,6 +40,7 @@ const createMovie = async (data) => {
     titulo: data.titulo,
     descricao: data.descricao,
     ano_lancamento: data.anoLancamento,
+    external_data: data.externalData,
   };
 };
 
