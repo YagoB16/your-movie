@@ -2,7 +2,7 @@ import express from "express";
 import movieRoutes from "./routes/movieRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import systemRoutes from "./routes/systemRoutes.js";
-import errorMiddleware from "./middlewares/errorMidleware.js";
+import errorMiddleware from "./middlewares/errorMiddleware.js";
 
 const app = express();
 
