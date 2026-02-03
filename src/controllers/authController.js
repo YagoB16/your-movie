@@ -51,11 +51,13 @@ export const login = async (req, res) => {
   try {
     const user = await authModel.findUserByEmail(email);
 
+
+
     if (!user) {
       return res.status(401).json({ message: "Usuário ou senha inválidos." });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.senha);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "Usuário ou senha inválidos." });
