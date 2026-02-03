@@ -6,7 +6,7 @@ import authModel from "../models/authModel.js";
 const { findUserByEmail, createUser } = authModel;
 
 export const register = async (req, res) => {
-  const { email, senha, role } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     const userExists = await findUserByEmail(email);
@@ -17,9 +17,14 @@ export const register = async (req, res) => {
     }
 
     const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(senha, saltRounds);
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const newUser = await createUser({ email, senha: passwordHash, role });
+    const newUser = await createUser({
+      name,
+      email,
+      password: passwordHash,
+      role,
+    });
 
     const token = jwt.sign(
       { id: newUser.id, role: newUser.role },
@@ -30,7 +35,7 @@ export const register = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Usuário criado com sucesso!",
-      user: { id: newUser.id, email: newUser.email },
+      user: { id: newUser.id, nome: newUser.nome, email: newUser.email, name: newUser.name },
       token,
     });
   } catch (error) {
@@ -41,7 +46,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, senha } = req.body;
+  const { email, password } = req.body;
 
   try {
     const user = await authModel.findUserByEmail(email);
@@ -50,14 +55,12 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Usuário ou senha inválidos." });
     }
 
-    // Compara a senha enviada com o hash do banco
-    const passwordMatch = await bcrypt.compare(senha, user.senha);
+    const passwordMatch = await bcrypt.compare(password, user.senha);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "Usuário ou senha inválidos." });
     }
 
-    // Geração do Token
     const token = jwt.sign(
       { id: user.id, role: user.role || "user" },
       authConfig.secret,
@@ -66,7 +69,7 @@ export const login = async (req, res) => {
 
     return res.json({
       success: true,
-      info: { id: user.id, email: user.email },
+      info: { id: user.id, email: user.email, name: user.name },
       token,
     });
   } catch (error) {

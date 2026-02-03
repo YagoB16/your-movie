@@ -53,6 +53,7 @@ const getMovies = async () => {
       titulo: data.titulo,
       descricao: data.descricao,
       anoLancamento: data.ano_lancamento,
+      external_data: data.external_data
     };
   });
 };

@@ -16,8 +16,9 @@ const findUserByEmail = async (email) => {
 
 const createUser = async (userData) => {
     const docRef = await addDoc(usersCollection, {
+        name: userData.name,
         email: userData.email,
-        senha: userData.senha,
+        password: userData.password,
         role: userData.role || 'user',
         createdAt: new Date()
     });

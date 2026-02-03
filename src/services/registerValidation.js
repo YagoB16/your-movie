@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const registerSchema = z.object({
   email: z.email("Insira um formato de e-mail válido"),
-
-  senha: z
+  name: z.string("Insira um nome válido"),
+  password: z
     .string({
       required_error: "A senha é obrigatória",
     })
@@ -17,7 +17,7 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = registerSchema
-  .omit({ role: true })
+  .omit({ role: true, name: true })
   .extend({
-    senha: z.string({ required_error: "A senha é obrigatória" }),
+    password: z.string({ required_error: "A senha é obrigatória" }),
   });

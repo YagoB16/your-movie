@@ -3,8 +3,11 @@ import movieRoutes from "./routes/movieRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import systemRoutes from "./routes/systemRoutes.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
@@ -12,7 +15,6 @@ app.use(express.json());
 app.use("/movies", movieRoutes);
 app.use("/auth", authRoutes);
 app.use("/system", systemRoutes);
-
 
 app.use(errorMiddleware);
 
