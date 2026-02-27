@@ -1,7 +1,12 @@
 import express from "express";
-import { login, register } from "../controllers/authController.js";
+import {
+    login,
+    register,
+    forgotPassword,
+    resetPassword
+} from "../controllers/authController.js";
 import { validate } from "../middlewares/validateMiddleware.js";
-import {registerSchema, loginSchema} from "../services/registerValidation.js"
+import { registerSchema, loginSchema } from "../services/registerValidation.js"
 const router = express.Router();
 
 /**
@@ -50,5 +55,18 @@ router.post("/register", validate(registerSchema), register);
  * @apiError (Erro 500) {String} message "Erro interno no servidor."
  */
 router.post("/login", validate(loginSchema), login);
+
+
+/**
+ * @api {post} /auth/forgot-password Solicitar recuperação de senha
+ * @apiDescription Gera um PIN de 6 dígitos e envia para o e-mail do usuário.
+ */
+router.post("/forgot-password", forgotPassword);
+
+/**
+ * @api {post} /auth/reset-password Redefinir senha com PIN
+ * @apiDescription Valida o PIN e atualiza a senha do usuário no banco.
+ */
+router.post("/reset-password", resetPassword);
 
 export default router;

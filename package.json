@@ -18,9 +18,11 @@
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "firebase": "^12.8.0",
+    "firebase-admin": "^13.7.0",
     "jsonwebtoken": "^9.0.3",
     "supertest": "^7.2.2",
     "zod": "^4.3.5"

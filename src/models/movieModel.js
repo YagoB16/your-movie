@@ -1,34 +1,22 @@
 import { db } from "../config/database.js";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  doc,
-} from "firebase/firestore";
 
-const moviesCollection = collection(db, "movies");
+
+const moviesCollection = db.collection("movies");
 
 const createMovie = async (data) => {
-  const q = query(
-    moviesCollection,
-    where("titulo", "==", data.titulo),
-    where("ano_lancamento", "==", data.anoLancamento),
-  );
-
-  const querySnapshot = await getDocs(q);
+ 
+  const querySnapshot = await moviesCollection
+    .where("titulo", "==", data.titulo)
+    .where("ano_lancamento", "==", data.anoLancamento)
+    .get();
 
   if (!querySnapshot.empty) {
     const error = new Error("Este filme já está cadastrado no catálogo.");
     error.statusCode = 409;
     throw error;
   }
-
-  const docRef = await addDoc(moviesCollection, {
+  
+  const docRef = await moviesCollection.add({
     titulo: data.titulo,
     descricao: data.descricao,
     ano_lancamento: data.anoLancamento,
@@ -39,13 +27,14 @@ const createMovie = async (data) => {
     id: docRef.id,
     titulo: data.titulo,
     descricao: data.descricao,
-    ano_lancamento: data.anoLancamento,
+    anoLancamento: data.anoLancamento,
     external_data: data.externalData,
   };
 };
 
 const getMovies = async () => {
-  const snapshot = await getDocs(moviesCollection);
+  // Sintaxe de get all: .get()
+  const snapshot = await moviesCollection.get();
   return snapshot.docs.map((doc) => {
     const data = doc.data();
     return {
@@ -58,12 +47,10 @@ const getMovies = async () => {
   });
 };
 
+const getMovieById = async (id) => {  
+  const movieSnap = await moviesCollection.doc(id).get();
 
-const getMovieById = async (id) => {
-  const movieRef = doc(db, "movies", id);
-  const movieSnap = await getDoc(movieRef);
-
-  if (!movieSnap.exists()) {
+  if (!movieSnap.exists) { 
     const error = new Error("Filme não encontrado no banco de dados.");
     error.statusCode = 404;
     throw error;
@@ -80,39 +67,38 @@ const getMovieById = async (id) => {
 };
 
 const updateMovie = async (id, data) => {
-  const movieRef = doc(db, "movies", id);
+  const movieRef = moviesCollection.doc(id);
+  const movieSnap = await movieRef.get();
 
-  const movieSnap = await getDoc(movieRef);
-
-  if (!movieSnap.exists()) {
+  if (!movieSnap.exists) {
     const error = new Error("Filme não encontrado no banco de dados.");
     error.statusCode = 404;
     throw error;
   }
 
-  //Transformar meus campos camelCase em snake_case
   const dataToUpdate = {};
-
   if (data.titulo) dataToUpdate.titulo = data.titulo;
   if (data.descricao) dataToUpdate.descricao = data.descricao;
   if (data.anoLancamento) dataToUpdate.ano_lancamento = data.anoLancamento;
   if (data.imdbID) dataToUpdate.imdbID = data.imdbID;
 
-  await updateDoc(movieRef, dataToUpdate);
+  // Sintaxe de update: .update()
+  await movieRef.update(dataToUpdate);
   return { id, ...dataToUpdate };
 };
 
 const deleteMovie = async (id) => {
-  const movieRef = doc(db, "movies", id);
-  const movieSnap = await getDoc(movieRef);
+  const movieRef = moviesCollection.doc(id);
+  const movieSnap = await movieRef.get();
 
-  if (!movieSnap.exists()) {
+  if (!movieSnap.exists) {
     const error = new Error("Filme não encontrado no banco de dados.");
     error.statusCode = 404;
     throw error;
   }
 
-  await deleteDoc(movieRef);
+  // Sintaxe de delete: .delete()
+  await movieRef.delete();
   return id;
 };
 
