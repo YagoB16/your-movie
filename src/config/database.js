@@ -1,10 +1,12 @@
 import admin from "firebase-admin";
-import { createRequire } from "module";
 import 'dotenv/config';
 
-const require = createRequire(import.meta.url);
-// Certifique-se de que o arquivo JSON está nesta pasta config
-const serviceAccount = require("./serviceAccountKey.json");
+const serviceAccount = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  // O replace transforma a string \n do .env em quebras de linha reais para a chave
+  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+};
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -13,5 +15,4 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-
 export { db };

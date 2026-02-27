@@ -22,6 +22,7 @@ const createUser = async (userData) => {
 };
 
 const createPasswordReset = async (email, pin) => {
+      
     await resetsCollection.add({
         email,
         pin,

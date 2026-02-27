@@ -86,15 +86,12 @@ export const forgotPassword = async (req, res) => {
       const pinPass = crypto.randomInt(100000, 999999).toString();
       await authModel.createPasswordReset(email, pinPass);
 
-      // Simulação de envio - O PIN aparecerá no console do VS Code
       console.log(`[EMAIL SIMULATION] PIN para ${email}: ${pinPass}`);
     }
 
-    console.log(pinPass)
     return res.status(200).json({
       success: true,
-      message: "Se o e-mail estiver cadastrado, um PIN foi enviado.",
-      pin: pinPass
+      message: "Se o e-mail estiver cadastrado, um PIN foi enviado."
     });
   } catch (error) {
     return res.status(500).json({ message: "Erro ao processar solicitação: " + error.message });
