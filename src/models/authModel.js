@@ -7,7 +7,7 @@ const findUserByEmail = async (email) => {
     const querySnapshot = await usersCollection.where("email", "==", email).get();
     if (querySnapshot.empty) return null;
     const doc = querySnapshot.docs[0];
-    return { id: doc.id, ...doc.data() };
+    return { id: doc.id, name: doc.data().name, email: doc.data().email };
 };
 
 const createUser = async (userData) => {
@@ -22,7 +22,7 @@ const createUser = async (userData) => {
 };
 
 const createPasswordReset = async (email, pin) => {
-      
+
     await resetsCollection.add({
         email,
         pin,

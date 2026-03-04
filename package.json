@@ -24,10 +24,12 @@
     "firebase": "^12.8.0",
     "firebase-admin": "^13.7.0",
     "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^8.0.1",
     "supertest": "^7.2.2",
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@types/nodemailer": "^7.0.11",
     "apidoc": "^1.2.0",
     "cross-env": "^10.1.0",
     "jest": "^30.2.0",

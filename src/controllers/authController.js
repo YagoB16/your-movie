@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authConfig from "../config/auth.js";
 import authModel from "../models/authModel.js";
+import { sendResetPasswordEmail } from "../services/emailService.js";
 
 export const register = async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -85,16 +86,15 @@ export const forgotPassword = async (req, res) => {
     if (user) {
       const pinPass = crypto.randomInt(100000, 999999).toString();
       await authModel.createPasswordReset(email, pinPass);
+      const info = { pinPass, user };
+      await sendResetPasswordEmail(email, info);
 
-      console.log(`[EMAIL SIMULATION] PIN para ${email}: ${pinPass}`);
+      res.status(200).json({ success: true, message: "E-mail enviado!" });
     }
-
-    return res.status(200).json({
-      success: true,
-      message: "Se o e-mail estiver cadastrado, um PIN foi enviado."
-    });
   } catch (error) {
-    return res.status(500).json({ message: "Erro ao processar solicitação: " + error.message });
+    return res
+      .status(500)
+      .json({ message: "Erro ao processar solicitação: " + error.message });
   }
 };
 
@@ -105,14 +105,18 @@ export const resetPassword = async (req, res) => {
     const resetData = await authModel.findResetByEmailAndPin(email, pin);
 
     if (!resetData) {
-      return res.status(400).json({ message: "PIN inválido ou e-mail incorreto." });
+      return res
+        .status(400)
+        .json({ message: "PIN inválido ou e-mail incorreto." });
     }
 
     const agora = new Date();
     const expira = resetData.expiresAt.toDate();
 
     if (agora > expira) {
-      return res.status(400).json({ message: "Este PIN expirou. Solicite um novo." });
+      return res
+        .status(400)
+        .json({ message: "Este PIN expirou. Solicite um novo." });
     }
 
     const user = await authModel.findUserByEmail(email);
@@ -131,9 +135,11 @@ export const resetPassword = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Senha alterada com sucesso!"
+      message: "Senha alterada com sucesso!",
     });
   } catch (error) {
-    return res.status(500).json({ message: "Erro ao resetar senha: " + error.message });
+    return res
+      .status(500)
+      .json({ message: "Erro ao resetar senha: " + error.message });
   }
 };
