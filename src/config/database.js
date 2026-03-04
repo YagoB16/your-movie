@@ -4,8 +4,8 @@ import 'dotenv/config';
 const serviceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  // O replace transforma a string \n do .env em quebras de linha reais para a chave
-  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  // Remove aspas acidentais e converte \n em quebras de linha reais
+  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n').replace(/"/g, '')
 };
 
 if (!admin.apps.length) {
